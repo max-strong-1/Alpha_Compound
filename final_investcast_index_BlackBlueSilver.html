@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   InvestCast Analytics - Data-Driven Real Estate Investment
+  </title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js">
+  </script>
+  <style>
+   :root {
+  --electric-blue: #00b4ff;
+  --black: #000000;
+  --silver: #c0c0c0;
+  --charcoal: #1e1e1e;
+  --graphite: #2e2e2e;
+  --white: #ffffff;
+}
+
+
+
+   * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: auto;
+            overflow-x: hidden;
+            overflow-y: auto;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .tagline {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+
+        .cta-phone {
+            background: #e74c3c;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .cta-phone:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+
+        .hero {
+            background: white;
+            padding: 5rem 0 3rem 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #2c3e50;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            margin-bottom: 2rem;
+        }
+
+        .property-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            margin: 2rem 0;
+        }
+
+        .property-header {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .property-title {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .property-price {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .property-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            padding: 2rem;
+        }
+
+        .detail-item {
+            text-align: center;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .detail-label {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-bottom: 0.5rem;
+        }
+
+        .detail-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        /* PHOTO GALLERY STYLES */
+        .gallery-section {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            aspect-ratio: 16/9;
+            background: #f8f9fa;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.02);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .gallery-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .gallery-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.7));
+            color: white;
+            padding: 1rem;
+            font-weight: bold;
+        }
+
+        /* Lightbox Modal */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .lightbox.active {
+            display: flex;
+        }
+
+        .lightbox-content {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 10px;
+            position: relative;
+        }
+
+        .lightbox img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        .market-data {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: #2c3e50;
+            text-align: center;
+        }
+
+        .data-source {
+            font-size: 0.8rem;
+            color: #95a5a6;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .calculator {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .input-range {
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: #ddd;
+            outline: none;
+            margin-bottom: 0.5rem;
+        }
+
+        .input-value {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #3498db;
+        }
+
+        .results {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .result-label {
+            font-weight: bold;
+        }
+
+        .result-value {
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .roi-grade {
+            text-align: center;
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .grade-excellent { background: #2ecc71; color: white; }
+        .grade-good { background: #f39c12; color: white; }
+        .grade-fair { background: #e67e22; color: white; }
+
+        .chart-container {
+            margin-top: 2rem;
+            height: auto;
+            min-height: 300px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chart-container canvas {
+            min-height: 300px !important;
+            height: auto !important;
+        }
+
+        .urgency-banner {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            margin: 2rem 0;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        .contact-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+            margin-top: 2rem;
+            margin-bottom: 0;
+            position: relative;
+        }
+
+        .contact-section::after {
+            content: '';
+            display: block;
+            height: 1px;
+            width: 100%;
+            clear: both;
+        }
+
+        .contact-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .expert-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .calculator-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .loading {
+            text-align: center;
+            color: #7f8c8d;
+            font-style: italic;
+        }
+  </style>
+ </head>
+ <body>
+  <header class="header">
+   <div class="container">
+    <div class="header-content">
+     <div>
+      <div class="logo">
+       InvestCast Analytics
+      </div>
+      <div class="tagline">
+       AI-Powered Real Estate Investment Intelligence
+      </div>
+     </div>
+     <a class="cta-phone" href="tel:+15618319310">
+      📞 (561) 831-9310
+     </a>
+    </div>
+   </div>
+  </header>
+  <main>
+   <section class="hero">
+    <div class="container">
+     <h1>
+      Premium Beach Investment Opportunity
+     </h1>
+     <p class="hero-subtitle">
+      Fully Renovated Quadplex - Ready to Generate Immediate Cash Flow
+     </p>
+    </div>
+   </section>
+   <div class="container">
+    <!-- PROPERTY PHOTO GALLERY -->
+    <div class="gallery-section">
+     <h2 class="section-title">
+      🏖️ Property Gallery
+     </h2>
+     <p class="data-source">
+      Professional photography showcasing turnkey renovations
+     </p>
+     <div class="gallery-grid">
+      <div class="gallery-item" onclick="openLightbox('exterior')">
+       <img alt="exterior" src="edited/FAB82A8D-EC68-4C69-8F27-144F12837661.jpeg"/>
+       <div class="gallery-caption">
+        Beachside Quadplex Exterior
+       </div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox('kitchen')">
+       <img alt="kitchen" src="edited/2F9A3F50-8652-4F89-9D8A-90E5757D63D3.jpeg"/>
+       <div class="gallery-caption">
+        Modern Kitchen Renovation
+       </div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox('bathroom')">
+       <img alt="bathroom" src="edited/EA0846A0-9F95-4E12-9C13-52DE267CF87D.jpeg"/>
+       <div class="gallery-caption">
+        Fully Updated Bathrooms
+       </div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox('living')">
+       <img alt="living" src="edited/36E59F26-35CE-4D96-B5B2-7E4A281E5403.jpeg"/>
+       <div class="gallery-caption">
+        Spacious Living Areas
+       </div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox('parking')">
+       <img alt="parking" src="edited/1C5AE6F4-D39D-4B40-B9CA-04236DBDEC64.jpeg"/>
+       <div class="gallery-caption">
+        Ample Parking - Rare Beach Advantage
+       </div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox('beach')">
+       <img alt="beach" src="edited/7D0A7385-4AB7-4785-8820-EB90BB489AAA.jpeg"/>
+       <div class="gallery-caption">
+        Steps from Panama City Beach
+       </div>
+      </div>
+     </div>
+     <div style="background: #e3f2fd; padding: 1.5rem; border-radius: 10px; margin-top: 2rem; text-align: center;">
+      <h4 style="color: #2c3e50; margin-bottom: 1rem;">
+       📸 Photography Note
+      </h4>
+      <p style="color: #34495e;">
+       Professional property photos will be uploaded here. These placeholders show the key areas investors want to see:
+       <strong>
+        exterior, renovated interiors, parking advantage, and beach proximity.
+       </strong>
+      </p>
+     </div>
+    </div>
+    <!-- Lightbox Modal -->
+    <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+     <div class="lightbox-content" onclick="event.stopPropagation()">
+      <button class="lightbox-close" onclick="closeLightbox()">
+       ×
+      </button>
+      <div id="lightbox-image">
+       <div class="gallery-placeholder" style="height: 400px;">
+        <div>
+         High-resolution image will display here
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="property-card">
+     <div class="property-header" style="background: linear-gradient(45deg, #27ae60, #229954);">
+      <h3 style="margin-bottom: 1rem;">
+       🏆 Why This Property Beats the Competition
+      </h3>
+     </div>
+     <div style="padding: 2rem;">
+      <div class="stats-grid">
+       <div class="detail-item" style="background: #e8f5e8; border-left: 4px solid #27ae60;">
+        <div class="detail-label">
+         ❌ NO HOA FEES
+        </div>
+        <div class="detail-value" style="color: #27ae60;">
+         Saves $3,000-6,000/Year
+        </div>
+       </div>
+       <div class="detail-item" style="background: #e3f2fd; border-left: 4px solid #2196f3;">
+        <div class="detail-label">
+         🔧 FULLY RENOVATED
+        </div>
+        <div class="detail-value" style="color: #2196f3;">
+         $200K+ Invested - Turnkey
+        </div>
+       </div>
+       <div class="detail-item" style="background: #fff3e0; border-left: 4px solid #ff9800;">
+        <div class="detail-label">
+         🏖️ BEACH LOCATION
+        </div>
+        <div class="detail-value" style="color: #ff9800;">
+         Tourism Premium Rents
+        </div>
+       </div>
+       <div class="detail-item" style="background: #fce4ec; border-left: 4px solid #e91e63;">
+        <div class="detail-label">
+         🅿️ AMPLE PARKING
+        </div>
+        <div class="detail-value" style="color: #e91e63;">
+         Rare Beach Advantage
+        </div>
+       </div>
+       <div class="detail-item" style="background: #f3e5f5; border-left: 4px solid #9c27b0;">
+        <div class="detail-label">
+         🏠 4-UNIT DIVERSITY
+        </div>
+        <div class="detail-value" style="color: #9c27b0;">
+         Risk Mitigation
+        </div>
+       </div>
+       <div class="detail-item" style="background: #e0f2f1; border-left: 4px solid #009688;">
+        <div class="detail-label">
+         💰 IMMEDIATE INCOME
+        </div>
+        <div class="detail-value" style="color: #009688;">
+         No Vacancy Period
+        </div>
+       </div>
+      </div>
+      <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 10px; margin-top: 2rem; text-align: center;">
+       <h4 style="color: #2c3e50; margin-bottom: 1rem;">
+        🎯 The Bottom Line
+       </h4>
+       <p style="font-size: 1.1rem; color: #34495e;">
+        While other properties require HOA fees, renovations, and management headaches,
+        <strong>
+         this investment is ready to generate cash flow from day one.
+        </strong>
+       </p>
+      </div>
+     </div>
+    </div>
+    <div class="property-card">
+     <div class="property-header">
+      <div class="property-title">
+       Premium Quadplex Investment Opportunity
+      </div>
+      <div class="property-price">
+       $1,300,000
+      </div>
+      <p>
+       2809 Lagoon Knoll Dr, Panama City Beach, FL 32408
+      </p>
+     </div>
+     <div class="property-details">
+      <div class="detail-item">
+       <div class="detail-label">
+        Units
+       </div>
+       <div class="detail-value">
+        4 Rental Units
+       </div>
+      </div>
+      <div class="detail-item">
+       <div class="detail-label">
+        Renovation Investment
+       </div>
+       <div class="detail-value">
+        $200K+ Complete
+       </div>
+      </div>
+      <div class="detail-item">
+       <div class="detail-label">
+        Annual Revenue
+       </div>
+       <div class="detail-value">
+        $218K - $268K
+       </div>
+      </div>
+      <div class="detail-item">
+       <div class="detail-label">
+        Cap Rate
+       </div>
+       <div class="detail-value">
+        8.5% - 9.6%
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="market-data">
+     <h2 class="section-title">
+      Live Market Intelligence
+     </h2>
+     <div class="data-source">
+      Real-time data from Federal Reserve Economic Data (FRED) &amp; Census Bureau
+     </div>
+     <div class="stats-grid" id="marketStats">
+      <div class="stat-card">
+       <div class="stat-value" id="interestRate">
+        Loading...
+       </div>
+       <div>
+        30-Year Mortgage Rate
+       </div>
+      </div>
+      <div class="stat-card">
+       <div class="stat-value" id="populationGrowth">
+        Loading...
+       </div>
+       <div>
+        FL Population Growth
+       </div>
+      </div>
+      <div class="stat-card">
+       <div class="stat-value" id="unemployment">
+        Loading...
+       </div>
+       <div>
+        Local Unemployment
+       </div>
+      </div>
+      <div class="stat-card">
+       <div class="stat-value" id="medianRent">
+        $2,200
+       </div>
+       <div>
+        Market Median Rent
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="calculator">
+     <h2 class="section-title">
+      Interactive ROI Calculator
+     </h2>
+     <div class="data-source">
+      Adjust parameters to see real-time investment analysis
+     </div>
+     <div class="calculator-grid">
+      <div class="inputs">
+       <div class="input-group">
+        <label class="input-label">
+         Purchase Price
+        </label>
+        <input class="input-range" id="purchasePrice" max="1700000" min="900000" step="10000" type="range" value="1300000"/>
+        <div class="input-value" id="purchasePriceValue">
+         $1,300,000
+        </div>
+       </div>
+       <div class="input-group">
+        <label class="input-label">
+         Down Payment %
+        </label>
+        <input class="input-range" id="downPayment" max="50" min="20" step="5" type="range" value="25"/>
+        <div class="input-value" id="downPaymentValue">
+         25%
+        </div>
+       </div>
+       <div class="input-group">
+        <label class="input-label">
+         Interest Rate %
+        </label>
+        <input class="input-range" id="interestRateCalc" max="8.0" min="5.0" step="0.1" type="range" value="6.5"/>
+        <div class="input-value" id="interestRateValue">
+         6.5%
+        </div>
+       </div>
+       <div class="input-group">
+        <label class="input-label">
+         Monthly Revenue
+        </label>
+        <input class="input-range" id="monthlyRevenue" max="25000" min="15000" step="500" type="range" value="18200"/>
+        <div class="input-value" id="monthlyRevenueValue">
+         $18,200
+        </div>
+       </div>
+       <div class="input-group">
+        <label class="input-label">
+         HOA Fees (This Property = $0)
+        </label>
+        <input class="input-range" id="hoaFees" max="500" min="0" step="25" type="range" value="0"/>
+        <div class="input-value" id="hoaFeesValue">
+         $0
+        </div>
+       </div>
+      </div>
+      <div class="results" id="calculatorResults">
+       <div class="result-item">
+        <span class="result-label">
+         Down Payment:
+        </span>
+        <span class="result-value" id="downPaymentAmount">
+         $325,000
+        </span>
+       </div>
+       <div class="result-item">
+        <span class="result-label">
+         Monthly Mortgage:
+        </span>
+        <span class="result-value" id="monthlyMortgage">
+         $6,194
+        </span>
+       </div>
+       <div class="result-item">
+        <span class="result-label">
+         HOA Fees:
+        </span>
+        <span class="result-value" id="hoaFeesDisplay" style="color: #27ae60;">
+         $0
+        </span>
+       </div>
+       <div class="result-item">
+        <span class="result-label">
+         Monthly Cash Flow:
+        </span>
+        <span class="result-value" id="monthlyCashFlow">
+         $10,506
+        </span>
+       </div>
+       <div class="result-item">
+        <span class="result-label">
+         Annual ROI:
+        </span>
+        <span class="result-value" id="annualROI">
+         38.8%
+        </span>
+       </div>
+       <div class="result-item">
+        <span class="result-label">
+         Cash-on-Cash Return:
+        </span>
+        <span class="result-value" id="cashOnCash">
+         38.8%
+        </span>
+       </div>
+       <div class="roi-grade" id="roiGrade">
+        EXCELLENT INVESTMENT
+       </div>
+      </div>
+     </div>
+     <div class="chart-container">
+      <canvas id="roiChart">
+      </canvas>
+     </div>
+     <div style="background: #f8f9fa; padding: 2rem; border-radius: 15px; margin-top: 2rem;">
+      <h3 style="text-align: center; margin-bottom: 1.5rem; color: #2c3e50;">
+       🏖️ Beach Property Comparison
+      </h3>
+      <div class="stats-grid">
+       <div class="detail-item">
+        <div class="detail-label">
+         Typical Beach Property
+        </div>
+        <div class="detail-value" style="color: #e74c3c;">
+         $300-500/month HOA
+        </div>
+        <div style="font-size: 0.9rem; color: #7f8c8d; margin-top: 0.5rem;">
+         + Renovation needed
+        </div>
+       </div>
+       <div class="detail-item">
+        <div class="detail-label">
+         This Property
+        </div>
+        <div class="detail-value" style="color: #27ae60;">
+         $0 HOA Fees
+        </div>
+        <div style="font-size: 0.9rem; color: #27ae60; margin-top: 0.5rem;">
+         Renovations complete
+        </div>
+       </div>
+       <div class="detail-item">
+        <div class="detail-label">
+         Annual HOA Savings
+        </div>
+        <div class="detail-value" style="color: #27ae60;">
+         $3,600 - $6,000
+        </div>
+        <div style="font-size: 0.9rem; color: #7f8c8d; margin-top: 0.5rem;">
+         Straight to cash flow
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="urgency-banner">
+     ⏰ EXCLUSIVE OPPORTUNITY: Fully renovated beachfront quadplex rarely available - Current owner relocating
+    </div>
+   </div>
+  </main>
+  <section class="contact-section">
+   <div class="container">
+    <div class="contact-content">
+     <div class="expert-badge">
+      <h3>
+       AI Investment Technology Specialist
+      </h3>
+      <p>
+       Combining advanced analytics with real estate expertise
+      </p>
+     </div>
+     <h2>
+      Ready to Secure This Premium Investment?
+     </h2>
+     <p style="margin: 1rem 0;">
+      Schedule your private showing and complete financial analysis
+     </p>
+     <div style="margin: 2rem 0;">
+      <a class="cta-phone" href="tel:+15618319310" style="display: inline-block; margin: 0.5rem; padding: 1rem 2rem; font-size: 1.1rem;">
+       📞 Call Now: (561) 831-9310
+      </a>
+     </div>
+     <p style="font-size: 0.9rem; opacity: 0.8;">
+      Kel Mewbourne | Max Strong Performance &amp; Foreman AI
+      <br/>
+      Powered by InvestCast Analytics Platform
+     </p>
+    </div>
+   </div>
+  </section>
+  <script>
+   // Photo Gallery Functions
+        function openLightbox(imageType) {
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImage = document.getElementById('lightbox-image');
+            
+            // This will show a placeholder for now - replace with actual images later
+            lightboxImage.innerHTML = `
+                <div class="gallery-placeholder" style="height: 400px; font-size: 1.5rem;">
+                    <div>
+                        📸 ${imageType.charAt(0).toUpperCase() + imageType.slice(1)} Photo<br>
+                        <small style="font-size: 1rem;">Professional photo will be displayed here</small>
+                    </div>
+                </div>
+            `;
+            
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            lightbox.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Calculator functionality
+        const elements = {
+            purchasePrice: document.getElementById('purchasePrice'),
+            downPayment: document.getElementById('downPayment'),
+            interestRate: document.getElementById('interestRateCalc'),
+            monthlyRevenue: document.getElementById('monthlyRevenue'),
+            hoaFees: document.getElementById('hoaFees'),
+            purchasePriceValue: document.getElementById('purchasePriceValue'),
+            downPaymentValue: document.getElementById('downPaymentValue'),
+            interestRateValue: document.getElementById('interestRateValue'),
+            monthlyRevenueValue: document.getElementById('monthlyRevenueValue'),
+            hoaFeesValue: document.getElementById('hoaFeesValue'),
+            downPaymentAmount: document.getElementById('downPaymentAmount'),
+            monthlyMortgage: document.getElementById('monthlyMortgage'),
+            monthlyCashFlow: document.getElementById('monthlyCashFlow'),
+            annualROI: document.getElementById('annualROI'),
+            cashOnCash: document.getElementById('cashOnCash'),
+            roiGrade: document.getElementById('roiGrade')
+        };
+
+        let roiChart;
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(amount);
+        }
+
+        function calculateMortgage(principal, rate, years) {
+            const monthlyRate = rate / 100 / 12;
+            const numPayments = years * 12;
+            return (principal * monthlyRate * Math.pow(1 + monthlyRate, numPayments)) / 
+                   (Math.pow(1 + monthlyRate, numPayments) - 1);
+        }
+
+        function updateCalculator() {
+            const purchasePrice = parseInt(elements.purchasePrice.value);
+            const downPaymentPercent = parseInt(elements.downPayment.value);
+            const interestRate = parseFloat(elements.interestRate.value);
+            const monthlyRevenue = parseInt(elements.monthlyRevenue.value);
+            const hoaFees = parseInt(elements.hoaFees.value);
+
+            // Update display values
+            elements.purchasePriceValue.textContent = formatCurrency(purchasePrice);
+            elements.downPaymentValue.textContent = downPaymentPercent + '%';
+            elements.interestRateValue.textContent = interestRate + '%';
+            elements.monthlyRevenueValue.textContent = formatCurrency(monthlyRevenue);
+            elements.hoaFeesValue.textContent = formatCurrency(hoaFees);
+
+            // Calculations
+            const downPaymentAmount = purchasePrice * (downPaymentPercent / 100);
+            const loanAmount = purchasePrice - downPaymentAmount;
+            const monthlyMortgage = calculateMortgage(loanAmount, interestRate, 30);
+            
+            // Realistic Operating Expenses
+            const propertyTaxes = (purchasePrice * 0.014) / 12; // 1.4% annually
+            const insurance = (purchasePrice * 0.004) / 12; // 0.4% annually (FL hurricane zone)
+            const maintenance = (purchasePrice * 0.02) / 12; // 2% annually
+            const propertyMgmt = monthlyRevenue * 0.10; // 10% of gross revenue
+            const vacancy = monthlyRevenue * 0.08; // 8% vacancy allowance
+            const utilities = 200; // Monthly utilities
+            const misc = 300; // Legal, accounting, misc
+            
+            const totalOperatingExpenses = propertyTaxes + insurance + maintenance + 
+                                         propertyMgmt + vacancy + utilities + misc + hoaFees;
+            const monthlyExpenses = monthlyMortgage + totalOperatingExpenses;
+            const monthlyCashFlow = monthlyRevenue - monthlyExpenses;
+            const annualCashFlow = monthlyCashFlow * 12;
+            const cashOnCashReturn = (annualCashFlow / downPaymentAmount) * 100;
+
+            // Update results
+            elements.downPaymentAmount.textContent = formatCurrency(downPaymentAmount);
+            elements.monthlyMortgage.textContent = formatCurrency(monthlyMortgage);
+            document.getElementById('hoaFeesDisplay').textContent = formatCurrency(hoaFees);
+            elements.monthlyCashFlow.textContent = formatCurrency(monthlyCashFlow);
+            elements.annualROI.textContent = cashOnCashReturn.toFixed(1) + '%';
+            elements.cashOnCash.textContent = cashOnCashReturn.toFixed(1) + '%';
+
+            // Update grade
+            let grade, gradeClass;
+            if (cashOnCashReturn >= 15) {
+                grade = 'EXCELLENT INVESTMENT';
+                gradeClass = 'grade-excellent';
+            } else if (cashOnCashReturn >= 10) {
+                grade = 'GOOD INVESTMENT';
+                gradeClass = 'grade-good';
+            } else {
+                grade = 'FAIR INVESTMENT';
+                gradeClass = 'grade-fair';
+            }
+            
+            elements.roiGrade.textContent = grade;
+            elements.roiGrade.className = 'roi-grade ' + gradeClass;
+
+            updateChart(cashOnCashReturn, monthlyCashFlow);
+        }
+
+        function updateChart(roi, cashFlow) {
+            const ctx = document.getElementById('roiChart').getContext('2d');
+            
+            if (roiChart) {
+                roiChart.destroy();
+            }
+
+            roiChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['This Property (No HOA)', 'Typical Beach Property', 'Stock Market Avg', 'Bond Market Avg'],
+                    datasets: [{
+                        label: 'Annual Return %',
+                        data: [roi, Math.max(roi - 4, 8), 10.5, 4.2],
+                        backgroundColor: [
+                            '#27ae60',
+                            '#e74c3c',
+                            '#3498db',
+                            '#f39c12'
+                        ],
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        title: {
+                            display: true,
+                            text: 'Investment Return Comparison - Beach Properties vs Traditional'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Event listeners
+        Object.values(elements).forEach(element => {
+            if (element && element.addEventListener) {
+                element.addEventListener('input', updateCalculator);
+            }
+        });
+
+        // Load market data (simulated for MVP)
+        function loadMarketData() {
+            // Simulated data - in production, these would come from APIs
+            setTimeout(() => {
+                document.getElementById('interestRate').textContent = '6.81%';
+                document.getElementById('populationGrowth').textContent = '+2.1%';
+                document.getElementById('unemployment').textContent = '3.2%';
+            }, 1000);
+        }
+
+        // Initialize
+        updateCalculator();
+        loadMarketData();
+
+        // Close lightbox with ESC key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeLightbox();
+            }
+        });
+  </script>
+ </body>
+</html>
